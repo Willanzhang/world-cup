@@ -31,9 +31,5 @@ For a detailed explanation on how things work, check out the [guide](http://vuej
 
 # master 
 ```
-vue项目构建
-```
-# dev 
-```
-超级nba夺宝
+超级夺金世界杯
 ```
