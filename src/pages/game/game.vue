@@ -855,6 +855,8 @@
                 height: 100%;
                 .homeName {
                   font-size .24rem
+                  height: .4rem;
+                  line-height: .4rem;
                   div {
                     display inline-block
                     vertical-align: middle;
@@ -924,7 +926,9 @@
                 height: 100%;
                 flex 208
                 .homeName {
-                  font-size .24rem;
+                  font-size .24rem
+                  height: .4rem;
+                  line-height: .4rem;
                   div {
                     display inline-block
                     vertical-align: middle;
