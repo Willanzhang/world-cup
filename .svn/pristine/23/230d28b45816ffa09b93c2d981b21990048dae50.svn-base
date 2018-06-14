@@ -1,0 +1,427 @@
+
+
+  <!-- // <div class="swiper">
+  //   <swiper :options="swiperOption">
+  //     <swiper-slide v-for="(item, index) in slides" :key="index"><img :src="item"></swiper-slide>
+  //   </swiper>
+  // </div> -->
+
+<!-- // </template>
+<script> -->
+// import { swiper, swiperSlide } from 'vue-awesome-swiper'
+// export default {
+//   name: 'test2',
+//   data () {
+//     return {
+//       slides: [
+//         'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1511015180050&di=0d2ee92eead284e8133d6df07535d75a&imgtype=0&src=http%3A%2F%2Fimg.sc115.com%2Fuploads1%2Fsc%2Fjpgs%2F1512%2Fapic16988_sc115.com.jpg',
+//         'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1511015180167&di=7412fd486c47c15f1d27485be0d7bd28&imgtype=0&src=http%3A%2F%2Fwww.duoxinqi.com%2Fimages%2F2012%2F06%2F20120605_8.jpg',
+//         'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1511015180167&di=3bcedd33a30129b9951be2a81f9b505c&imgtype=0&src=http%3A%2F%2Fpic1.5442.com%2F2015%2F0420%2F06%2F05.jpg'
+//       ],
+//       // 轮播config
+//       swiperOption: {
+//         // 如果自行设计了插件，那么插件的一些配置相关参数，也应该出现在这个对象中，如下debugger
+//         debugger: true,
+//         // autoplay: 3000,
+//         slidesPerView: 'auto', // 设置slider容器能够同时显示的slides数量(carousel模式)。可以设置为数字（可为小数，小数不可loop），或者 'auto'则自动根据slides的宽度来设定数量。loop模式下如果设置为'auto'还需要设置另外一个参数loopedSlides。
+//         centeredSlides: true // <span style="color:rgb(68,68,68);font-family:'microsoft yahei';font-size:13px;">设定为true时，活动块会居中，而不是默认状态下的居左。</span>
+//       }
+//     }
+//   },
+//   components: {
+//     swiper,
+//     swiperSlide
+//   }
+// }
+// </script>
+
+// <style lang="styl" scoped>
+// .swiper
+//   margin 10px auto
+//   width 10rem
+//   height 6.4rem
+//   overflow hidden
+//   .swiper-slide
+//     width 8.533333333333333rem
+//     height 6.4rem
+//     &.swiper-slide-active
+//       img
+//         margin-top 0
+//         width 100%
+//         height 100%
+//     img
+//       display block
+//       margin 0 auto
+//       margin-top 3.5%
+//       width 90.625%
+//       height 90.625%
+//       vertical-align middle
+//       transition all 1s ease 0s
+// </style>
+
+<template>
+  <div class="swiperHome"  v-if="isAjax">
+    <swiper :options="swiperOption">
+      <swiper-slide v-for="(item, index) in matchList" :key="index">
+        <div class="swiperUntil">
+          <div class="topB">
+            <div class="downTime" v-if="distanceNow(item.matchTime) != -1">
+              距比赛开始时间还有{{item.matchTime | distanceNow}}小时
+            </div>
+            <div v-else class="downTime">
+              比赛进行中
+            </div>
+            <div class="battleBoth">
+              <!--<div class="top">NBA总决赛</div>-->
+              <div class="top">
+                <div class="leagueName">{{item.leagueName}}3123</div>
+                <div class="leagueTime">{{item.matchTime |timeFormat('MM-dd')}} {{item.matchTime |timeFormat('hh:mm')}}</div>
+              </div>
+              <div class="both">
+                <div class="homeTeam">
+                  <div class="logo">
+                    <img :src="item.homeTeamLogoUrl" alt="">
+                  </div>
+                  <div class="name">{{item.homeTeamName}}(主)</div>
+                </div>
+                <div class="vs">VS</div>
+                <div class="guestTeam">
+                  <div class="logo">
+                    <img :src="item.guestTeamLogoUrl" alt="">
+                  </div>
+                  <div class="name">{{item.guestTeamName}}(客)</div>
+                </div>
+              </div>
+            </div>
+            <div class="prize">
+              <div class="prizeTextName">猜赛果赢取</div>
+              <div class="prizeText">{{item.prizeInfo[0].prizeMoney}}{{item.prizeInfo[0].goodsName}}</div>
+            </div>
+
+          </div>
+          <div v-if="item.lockSectionInfo.hasJoined === 0 && item.lockSectionInfo.isAllFree === 0 && item.lockSectionInfo.isLockAll === 1" class="bottom" @click="sureJoin(item)">
+            马上报名 {{item.lockSectionInfo.allOpenMoney/100}}虎扑币参与
+          </div>
+          <div v-else-if="item.lockSectionInfo.hasJoined === 0 && item.lockSectionInfo.isAllFree === 1 && item.lockSectionInfo.isLockAll === 0" class="bottom" @click="goGamePage(item)">
+            马上报名 免费参与
+          </div>
+          <div v-else class="bottom green" @click="goGamePage(item)">
+            已经参与 立即查看
+          </div>
+        </div>
+      </swiper-slide>
+      <swiper-slide>
+        <div class="swiperUntil">
+          <div class="topB">
+            <div style="height: .42rem">
+            </div>
+            <div class="battleBoth">
+              <!--<div class="top">NBA总决赛</div>-->
+              <div class="top"></div>
+              <div class="both">
+                <div class="homeTeam">
+                  <div class="logo">
+                  </div>
+                </div>
+                <div class="noVs">暂无比赛</div>
+                <div class="guestTeam">
+                  <div class="logo">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="prize">
+              <!--<div class="prizeText">总价值5000元红包</div>-->
+              <div class="prizeText">大奖在路上</div>
+            </div>
+
+          </div>
+          <div class="bottom">
+            敬请期待
+          </div>
+        </div>
+      </swiper-slide>
+      <div v-if="matchList.length > 1" class="swiper-pagination" slot="pagination"></div>
+    </swiper>
+  </div>
+</template>
+
+<script>
+  import 'swiper/dist/css/swiper.css'
+  import { swiper, swiperSlide } from 'vue-awesome-swiper'
+  export default {
+    props: {
+      matchList: Array,
+      isAjax: Boolean
+    },
+    data () {
+      return {
+        swiperOption: {
+          effect: 'coverflow',
+          grabCursor: true,
+          centeredSlides: true,
+          slidesPerView: 'auto',
+          coverflowEffect: {
+            rotate: 50,
+            stretch: 0,
+            depth: 100,
+            modifier: 1,
+            slideShadows: true
+          },
+          pagination: {
+            el: '.swiper-pagination'
+          }
+        }
+      }
+    },
+    created () {
+      if (this.matchList.length < 1) {
+        this.swiperOption.pagination = ''
+      }
+    },
+    mounted () {
+      console.log(this.matchList, 'mathlist')
+    },
+    methods: {
+      // 解锁参加
+      sureJoin (item) {
+        // let params = {
+        //   payType: 3,
+        //   payAmount: item.lockSectionInfo.allOpenMoney,
+        //   oIssueNoList: item.lockSectionInfo.lockIssueNo,
+        //   matchNo: item.matchNo,
+        //   betType: 'JCHH',
+        //   lotyId: 'JCLQ'
+        // }
+        // if (this.data.balance < this.lockSectionInfo.allOpenMoney) {
+        //   this.$vux.toast.show({
+        //     position: 'middle',
+        //     width: '16em',
+        //     type: 'text',
+        //     time: 700,
+        //     text: '余额不足，请充值',
+        //     isShowMask: true
+        //   })
+        //   return
+        // }
+        // openIssuePass(params).then(res => {
+        //   if (res.data.errCode === 0) {
+        //     this.$vux.toast.show({
+        //       position: 'middle',
+        //       type: 'text',
+        //       width: '16em',
+        //       time: 700,
+        //       text: '已参加',
+        //       isShowMask: true
+        //     })
+        //     this.$router.push({name: 'game'})
+        //   } else if (res.data.retCode === 2109) {
+        //     this.showPlugin()
+        //   } else {
+        //     this.$vux.toast.show({
+        //       position: 'middle',
+        //       width: '16em',
+        //       type: 'text',
+        //       time: 1000,
+        //       text: res.data.msg,
+        //       isShowMask: true
+        //     })
+        //   }
+        // })
+      },
+      // 去游戏内页
+      goGamePage (item) {
+        this.$router.push({name: 'game', query: {uniqueId: item.uniqueId, matchNo: item.matchNo}})
+      },
+      distanceNow (matchTime) {
+        let nowTime = (new Date().getTime()) / 1000
+        let hourTime
+        if (nowTime >= matchTime) {
+          hourTime = -1
+          return hourTime
+        } else {
+          hourTime = matchTime / 3600 - nowTime / 3600
+          return Math.ceil(hourTime)
+        }
+      }
+    },
+    components: {
+      swiper,
+      swiperSlide
+    }
+  }
+</script>
+
+<style lang="stylus" >
+@import "../../common/stylus/colorreset"
+@import "../../common/stylus/mixin"
+.swiperHome {
+  margin-top: .8rem
+  .swiper-pagination {
+    transform: translateY(-1rem) !important;
+  }
+  .swiper-container {
+    height 10rem
+  }
+  .swiper-pagination-bullet {
+    background-color #fff !important
+  }
+  .swiper-pagination-bullet-active {
+    background-color #ccc !important
+  }
+  .swiper-inner {
+    width: 5.7rem;
+    height: 8rem;
+    padding-top: 50px;
+    padding-bottom: 50px;
+  }
+  .swiper-slide {
+    background-position: center;
+    background-size: cover;
+    width: 5.7rem;
+    height: 8.3rem;
+  }
+  .swiperUntil {
+    background-color: #1e1e1e;
+    width 5.7rem
+    height 8.3rem
+    display flex
+    flex-direction column
+    justify-content center
+    text-align center
+    .topB {
+      flex 1
+      border: .02rem solid #333333;
+      bg-image('./img/bg')
+      background-size: contain;
+      .downTime {
+        margin-left: .1rem
+        padding-left .25rem
+        height: .42rem;
+        font-size: .18rem;
+        line-height: .42rem;
+        text-align left
+        bg-image('./img/time')
+        background-position: left center;
+        background-size: .25rem .24rem;
+        background-repeat: no-repeat;
+      }
+      .battleBoth {
+        margin-top .26rem
+        .top {
+          height: 1.12rem;
+          font-size .3rem
+          color $color-meta
+        }
+        .leagueTime {
+          font-size: .22rem
+          height: .46rem;
+          line-height: .46rem;
+          color #ccc
+        }
+        .both {
+          display flex
+          justify-content center
+          height: 2.1rem;
+          .homeTeam {
+            flex 211
+            .logo {
+              height: 1.3rem;
+              img {
+                height: 1.3rem;
+                width: 1.3rem;
+                border-radius 50%
+              }
+            }
+            .name {
+              height: .6rem;
+              line-height: .6rem
+              font-size .24rem
+            }
+          }
+          .vs {
+            flex 143
+            height: 1.3rem;
+            line-height: 1.3rem;
+            font-size .52rem
+            font-weight bold
+          }
+          .noVs {
+            font-size .4rem
+            font-weight bold
+          }
+          .guestTeam {
+            flex 211
+            .logo {
+              height: 1.3rem;
+              img {
+                height: 1.3rem;
+                width: 1.3rem;
+                border-radius 50%
+              }
+            }
+            .name {
+              height: .6rem;
+              line-height: .6rem
+              font-size .24rem
+            }
+          }
+        }
+      }
+      .prize {
+        margin-top: .78rem
+        height: 1.84rem;
+        font-size: .38rem;
+        /*bg-image('./img/prizebg')*/
+        background-size: 4.68rem 1.78rem;
+        background-repeat: no-repeat;
+        background-position: center center;
+        position: relative;
+        color: #fffc91;
+        .prizeTextName {
+          font-size .36rem
+          font-weight bold
+          background: linear-gradient( #fffc91, #ffce05);
+          -webkit-background-clip: text;
+          color: transparent;
+        }
+        .prizeText {
+          font-size .6rem
+          height: 1.16rem;
+          line-height: 1.16rem
+          width: 100%;
+          /*position: absolute;
+          left 50%
+          top 50%*/
+          font-weight bold
+          /*transform translate(-50%, -50%)*/
+          background: linear-gradient( #fffc91, #ffce05);
+          -webkit-background-clip: text;
+          color: transparent;
+        }
+      }
+      .playNotice {
+        margin-top .3rem
+        height: .56rem;
+        line-height: .56rem;
+        color: #999
+        font-size .24rem
+      }
+    }
+    .bottom {
+      flex 0 0 1.04rem
+      line-height 1.04rem
+      /*font-weight bold*/
+      color #000
+      font-size .34rem
+      background-color $color-meta
+    }
+    .green {
+      background-color: #7ad06d;
+      color #fff
+    }
+  }
+}
+
+
+</style>

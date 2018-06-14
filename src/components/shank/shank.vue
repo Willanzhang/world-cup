@@ -1,12 +1,21 @@
 <template>
   <div class="shank" @click="hideShank">
-    <div class="box"></div>
+    <div class="box">
+      <div class="title">
+        温馨提示
+      </div>
+      <div class="lists">1、前{{freePassNum + 3}}次竞猜选项免费;</div>
+      <div class="lists">2、{{freePassNum + 3 + 1}}-{{totalPassNum + 3}}次竞猜选项需要消耗金币;</div>
+      <div class="lists">3、每场比赛最多选择{{totalPassNum + 3}}个竞猜选项;</div>
+    </div>
   </div>
 </template>
 
 <script>
   export default {
     props: {
+      totalPassNum: Number,
+      freePassNum: Number
     },
     mounted () {
     },
@@ -33,9 +42,24 @@
     height: 100%;
     background: rgba(0,0,0,.3)
     .box {
-      width: 3rem;
-      height: 3rem;
-      background-color: #fff;
+      width: 4.2rem;
+      height: 1.8rem;
+      padding-left .22rem
+      padding-top .15rem
+      background-color: #000;
+      color #fff
+      font-size .2rem
+      border-radius .12rem
+      .title {
+        font-size .2rem
+        height: .4rem;
+        line-height: .4rem;
+      }
+      .lists {
+        font-size .2rem
+        height: .34rem;
+        line-height: .34rem;
+      }
     }
   }
 </style>
